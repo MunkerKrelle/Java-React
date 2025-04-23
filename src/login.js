@@ -10,10 +10,11 @@ function Login(){
         const value = event.target.value;
         setInputs(values=>({...values,[name]: value}))
     }
-    // i stedet for at sende det til loggen skal der sendes besked til data basen om correct in put
+    
     const handleSubmit = (event)=>{
         event.preventDefault();
         console.log(nameInput);
+        // indsæt logik for database tjek her
     }
 
     return(
@@ -37,6 +38,11 @@ function Login(){
         </label>
         <br></br>
         <input type="submit" value="Log in"/>
+        <br></br>
+        <input
+        type="button"
+        name="changetonewuser"
+        value="Create new user"/>
         
     </form>
     
