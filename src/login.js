@@ -51,10 +51,8 @@ function Login(){
 
 }
 
-// create new user function to change site
-function CreatNewUser(){
-<input type="submit" value="Creat new user"/>
-}
+
+
 
 
 
