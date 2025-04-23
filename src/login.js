@@ -10,7 +10,7 @@ function Login(){
         const value = event.target.value;
         setInputs(values=>({...values,[name]: value}))
     }
-
+    // i stedet for at sende det til loggen skal der sendes besked til data basen om correct in put
     const handleSubmit = (event)=>{
         event.preventDefault();
         console.log(nameInput);
@@ -29,7 +29,7 @@ function Login(){
       </label>
       <label>Enter your password:
         <input 
-          type="number" 
+          type="password" 
           name="password" 
           value={nameInput.password || ""} 
           onChange={handleChange}
@@ -37,8 +37,9 @@ function Login(){
         </label>
         <br></br>
         <input type="submit" value="Log in"/>
-        <input type="submit" value="Creat new user"/>
+        
     </form>
+    
         
     )
 
