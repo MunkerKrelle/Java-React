@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 
 
+
 // creat input option to log in user/password
-function Login(){
+export default function Login(){
     const [nameInput, setInputs] = useState({username: "", password: ""});
 
     const handleChange = (event)=>{
@@ -58,4 +59,3 @@ function Login(){
 
 
 
-export default Login;

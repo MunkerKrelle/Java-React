@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
+import Login from ".//login";
 function GetName() {
-    return <h1>Hello World</h1>
+    return <div><Login/></div>
 }
 
 export default GetName;

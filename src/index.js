@@ -5,7 +5,7 @@ import Login from ".//login";
 
 // Render the App component
 const root = createRoot(document.getElementById("root"));
-root.render(<Login />);
+root.render(<GetName/>);
 
-const login = createRoot(document.getElementById("login"));
-login.render(<Login />);
+// const login = createRoot(document.getElementById("login"));
+// login.render(<Login />);
