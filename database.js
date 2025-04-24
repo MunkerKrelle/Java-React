@@ -32,9 +32,7 @@ db.serialize(() => {
     name TEXT NOT NULL, 
     text TEXT NOT NULL,
     date TEXT NOT NULL,
-    photo BLOB NOT NULL, 
-    resume BLOB NOT NULL);
-    )`, (err) => {
+    photo BLOB NOT NULL)`, (err) => {
         if (err) {
             console.error(err.message);
         } else {
