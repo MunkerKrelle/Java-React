@@ -9,11 +9,12 @@ function GetName() {
         <Router>
             <Routes>
                 <Route path="/" element={<Login/>}/>
-                <Route path="/newuser" element={<NewUser/>}/>                
+                <Route path="/newuser" element={<NewUser/>}/>
+                {/*<Route path="/nav på -js filen for profil" element={indsæt classe/ metode navn her til profilsiden}/>*/}                
             </Routes>
         </Router>
      ) 
-     // <div><NewUser/></div>
+     
 
 }
 
