@@ -1,10 +1,12 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
+const cors = require('cors');
 const app = express();
 const PORT = 3001;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
+app.use(cors());
 
 // Connect to SQLite database
 const db = new sqlite3.Database('mydatabase.db');
