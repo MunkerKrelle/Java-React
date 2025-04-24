@@ -43,7 +43,9 @@ export default function Login(){
         <input
         type="button"
         name="changetonewuser"
-        value="Create new user"/>
+        value="Create new user"
+        // indsæt logik til side skifte (til mig selv) 
+        />
         
     </form>
     
