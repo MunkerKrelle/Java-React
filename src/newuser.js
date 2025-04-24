@@ -1,11 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function NewUser(){
 
     const [userData, setUserData] = useState({username: "", password:""});
-
+    const navigate = useNavigate();
     const handleChange =(event)=>{
         const{name, value} = event.target;
+        
         setUserData((prev)=>({ ...prev,[name] : value }));
     };
 
@@ -14,6 +16,11 @@ export default function NewUser(){
         console.log(userData);
         // lave add to database her
     }
+
+    // function sat op til at blive kaldt når vi logger ind
+    const LogedIn = ()=>{
+        navigate("/logedin")
+      }
 
     return(
         <form onSubmit={handleSubmit}>
