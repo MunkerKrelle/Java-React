@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 
 
 
 // creat input option to log in user/password
 export default function Login(){
     const [nameInput, setInputs] = useState({username: "", password: ""});
-    const navigate = useNavigate();
+    
     const handleChange = (event)=>{
         const name = event.target.name;
         const value = event.target.value;
@@ -19,13 +19,7 @@ export default function Login(){
         // indsæt logik for database tjek her
     }
 
-    const goToCreateUser = () => {
-      navigate("/newuser");
-    }
-    // function sat op til at blive kaldt når vi logger ind
-    const LogedIn = ()=>{
-      navigate("/logedin")
-    }
+    
 
     return(
         <form onSubmit={handleSubmit}>
@@ -53,7 +47,7 @@ export default function Login(){
         type="button"
         name="changetonewuser"
         value="Create new user"
-        onClick={goToCreateUser}
+        
         // indsæt logik til side skifte (til mig selv) 
         />
         

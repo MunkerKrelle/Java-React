@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
 
 export default function NewUser(){
 
     const [userData, setUserData] = useState({username: "", password:""});
-    const navigate = useNavigate();
+    
     const handleChange =(event)=>{
         const{name, value} = event.target;
         
@@ -18,10 +18,7 @@ export default function NewUser(){
     }
 
     // function sat op til at blive kaldt når vi logger ind
-    const LogedIn = ()=>{
-        navigate("/logedin")
-      }
-
+   
     return(
         <form onSubmit={handleSubmit}>
             <label><h4>Please choose youre username</h4>
