@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function GetName() {
+function CreateUser() {
     const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -26,7 +26,7 @@ function GetName() {
         .then(response => response.json())
         .then(data => {
             console.log('User added:', data);
-            // Optionally, fetch users again to update the list
+            // Fetch users again to update the list
             setUsers(prevUsers => [...prevUsers, { id: data.id, username }]);
             setUsername('');
             setPassword('');
@@ -61,8 +61,9 @@ function GetName() {
                 />
                 <button type="submit">Add User</button>
             </form>
+            <h2>Add Post:</h2>
         </div>
     );
 }
 
-export default GetName;
+export default CreateUser;
