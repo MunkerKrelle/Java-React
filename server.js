@@ -28,7 +28,10 @@ app.post('/api/users', (req, res) => {
     const sql = `INSERT INTO users (username, password) VALUES (?, ?)`;
     db.run(sql, [username, password], function(err) {
         if (err) {
-            return res.status(400).json({ error: err.message });
+            if (err.message.includes('UNIQUE constraint failed')) {
+                return res.status(400).json({ error: 'Username already exists' });
+            }
+            return res.status(500).json({ error: 'Database error' });
         }
         res.status(201).json({ id: this.lastID, username });
     });
@@ -42,9 +45,9 @@ app.post('/api/login', (req, res) => {
         if (err) {
             res.status(500).json({ success: false, message: 'Database error' });
         } else if (row) {
-            res.json({ success: true, message: 'Login successful' });
+            res.status(200).json({ success: true, message: 'Login successful' });
         } else {
-            res.status(401).json({ success: false, message: 'Invalid credentials' });
+            res.status(401).json({ success: false, message: 'Invalid username or password' });
         }
     });
 });
