@@ -5,7 +5,12 @@ import {username}  from "./login";
 export default function BlogPost() {
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState("");
+    const [title, setTitle] = useState("");
 
+    const handleTitleChange = (event) => {
+        setTitle(event.target.value);
+    };
+    
     const handleChange = (event) => {
         setNewPost(event.target.value);
     };
@@ -16,12 +21,14 @@ export default function BlogPost() {
             
     const newPostObject = {
         id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        title: title,
         content: newPost,
         username: username || "Anonymous",
         
     };
     setPosts([newPostObject, ...posts]);
     setNewPost("");
+    setTitle("");
     
     };
 
@@ -29,6 +36,13 @@ export default function BlogPost() {
         <div style={{ maxWidth: "500px", margin: "auto" }}>
           <h2>Social Feed</h2>
           <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              placeholder="Skriv din overskrift her..."
+              style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
+              />
             <textarea
               value={newPost}
               onChange={handleChange}
@@ -41,9 +55,10 @@ export default function BlogPost() {
     
           <div style={{ marginTop: "30px" }}>
             {posts.map((post) => (
-              <div key={post.id} style={{ borderBottom: "1px solid #ccc", padding: "10px 0" }}>
-                <strong>{post.username}:</strong>
-                {post.content}
+              <div key={post.id} style={{ borderBlock: "10px solid #ccc" ,padding: "10px 0" }}>
+                <h3>{post.title}</h3>
+                <strong>{post.username}: </strong>
+                { post.content}
               </div>
             ))}
           </div>
