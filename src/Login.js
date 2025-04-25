@@ -1,54 +1,67 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
-function Login() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        fetch('http://localhost:3001/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Login successful:', data);
-                navigate('/profile', { state: { username } });
-            } else {
-                console.error('Login failed:', data.message);
-            }
-        })
-        .catch(error => console.error('Error logging in:', error));
-    };
 
-    return (
-        <div>
-            <h1>Login</h1>
-            <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Username"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    required
-                />
-                <input
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                />
-                <button type="submit">Login</button>
-            </form>
-        </div>
-    );
+
+// creat input option to log in user/password
+export default function Login(){
+    const [nameInput, setInputs] = useState({username: "", password: ""});
+    
+    const handleChange = (event)=>{
+        const name = event.target.name;
+        const value = event.target.value;
+        setInputs(values=>({...values,[name]: value}))
+    }
+    
+    const handleSubmit = (event)=>{
+        event.preventDefault();
+        console.log(nameInput);
+        // indsæt logik for database tjek her
+    }
+
+    
+
+    return(
+        <form onSubmit={handleSubmit}>
+      <label>Enter your username:
+      <input 
+        type="text" 
+        name="username" 
+        value={nameInput.username || ""} 
+        onChange={handleChange}
+      />
+      <br></br>
+      </label>
+      <label>Enter your password:
+        <input 
+          type="password" 
+          name="password" 
+          value={nameInput.password || ""} 
+          onChange={handleChange}
+        />
+        </label>
+        <br></br>
+        <input type="submit" value="Log in"/>
+        <br></br>
+        <input
+        type="button"
+        name="changetonewuser"
+        value="Create new user"
+        
+        // indsæt logik til side skifte (til mig selv) 
+        />
+        
+    </form>
+    
+        
+    )
+
 }
 
-export default Login;
+
+
+
+
+
+
+
