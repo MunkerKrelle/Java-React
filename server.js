@@ -22,20 +22,6 @@ app.get('/api/users', (req, res) => {
     });
 });
 
-app.get('/api/posts', (req, res) => {
-    db.all('SELECT * FROM users WHERE username = ?', [req.query.username], (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        if (rows.length === 0) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
-        const userId = rows[0].id; // Assuming the first row is the user we want
-    });
-});
-
 // API endpoint to add a new user
 app.post('/api/users', (req, res) => {
     const { username, password } = req.body;
