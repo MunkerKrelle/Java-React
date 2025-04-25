@@ -18,7 +18,7 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
-        profile_picture TEXT NOT NULL DEFAULT '/icon.png'
+        profile_picture TEXT NOT NULL DEFAULT '/uploads/icon.png'
     )`, (err) => {
         if (err) {
             console.error(err.message);
@@ -79,7 +79,7 @@ db.serialize(() => {
 
 // Insert a default user
 db.serialize(() => {
-    db.run(`INSERT INTO users (username, password) VALUES (?, ?)`, ['admin', 'admin123'], function(err) {
+    db.run(`INSERT INTO users (username, password, profile_picture) VALUES (?, ?, ?)`, ['admin', 'admin123', '/uploads/icon.png'], function(err) {
         if (err) {
             console.error(err.message);
         } else {

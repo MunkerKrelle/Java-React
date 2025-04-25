@@ -5,7 +5,7 @@ function Profile() {
     const location = useLocation();
     const { username } = location.state || { username: "Guest" };
     const [users, setUsers] = useState([]);
-    const [profilePicture, setProfilePicture] = useState('/icon.png'); // Default profile picture
+    const [profilePicture, setProfilePicture] = useState('/uploads/icon.png'); // Default profile picture
 
     useEffect(() => {
         // Fetch all users from the API
@@ -47,7 +47,7 @@ function Profile() {
                         {users.map(user => (
                             <li key={user.id} style={styles.userItem}>
                                 <img
-                                    src={user.profile_picture || '/icon.png'}
+                                    src={`http://localhost:3001${user.profile_picture || '/uploads/icon.png'}`}
                                     alt="User"
                                     style={styles.userPicture}
                                 />
@@ -59,7 +59,7 @@ function Profile() {
                 <div style={styles.profileDetails}>
                     <h1>Profile</h1>
                     <img
-                        src={profilePicture}
+                        src={`http://localhost:3001${profilePicture}`}
                         alt="Profile"
                         style={styles.profilePicture}
                     />
