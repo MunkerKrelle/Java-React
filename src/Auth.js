@@ -10,7 +10,7 @@ function Auth() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const url = isLogin ? 'http://localhost:3001/api/login' : 'http://localhost:3001/api/users';
+        const url = isLogin ? 'http://localhost:3000/api/login' : 'http://localhost:3000/api/users'; // Updated to port 3000
 
         fetch(url, {
             method: 'POST',

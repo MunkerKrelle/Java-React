@@ -1,6 +1,8 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
 const app = express();
 const PORT = 3001;
 
@@ -8,13 +10,31 @@ const PORT = 3001;
 app.use(express.json());
 app.use(cors());
 
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Directory to store uploaded files
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname)); // Unique filename
+    },
+});
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
+});
+
+// Serve static files from the uploads directory
+app.use('/uploads', express.static('uploads'));
+
 // Connect to SQLite database
 const db = new sqlite3.Database('mydatabase.db');
 
 // API endpoint to get users
 app.get('/api/users', (req, res) => {
-    db.all('SELECT * FROM users', [], (err, rows) => {
+    db.all('SELECT id, username, profile_picture FROM users', [], (err, rows) => {
         if (err) {
+            console.error('Database error:', err.message);
             res.status(500).json({ error: err.message });
             return;
         }
@@ -49,6 +69,25 @@ app.post('/api/login', (req, res) => {
         } else {
             res.status(401).json({ success: false, message: 'Invalid username or password' });
         }
+    });
+});
+
+// API endpoint to upload a profile picture
+app.post('/api/upload-profile-picture', upload.single('profilePicture'), (req, res) => {
+    const { username } = req.body; // Assume the username is sent in the request body
+    if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+    }
+
+    const filePath = `/uploads/${req.file.filename}`;
+    const sql = `UPDATE users SET profile_picture = ? WHERE username = ?`;
+
+    db.run(sql, [filePath, username], function (err) {
+        if (err) {
+            console.error('Error updating profile picture:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(200).json({ message: 'Profile picture updated', filePath });
     });
 });
 
