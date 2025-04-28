@@ -36,6 +36,7 @@ db.serialize(() => {
         name TEXT NOT NULL, 
         text TEXT NOT NULL,
         date TEXT NOT NULL,
+        likes INTEGER NOT NULL DEFAULT 0,
         photo TEXT
     )`, (err) => {
         if (err) {
@@ -66,8 +67,11 @@ db.serialize(() => {
 // Create a table for likes
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS likes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
         userref TEXT NOT NULL,
-        postref TEXT NOT NULL
+        liked boolean NOT NULL DEFAULT 0,
+        postref TEXT NOT NULL,
+                UNIQUE(userref, postref) -- Ensure a user can only like a post once
     )`, (err) => {
         if (err) {
             console.error(err.message);
@@ -79,7 +83,7 @@ db.serialize(() => {
 
 // Insert a default user
 db.serialize(() => {
-    db.run(`INSERT INTO users (username, password, profile_picture) VALUES (?, ?, ?)`, ['admin', 'admin123', '/uploads/icon.png'], function(err) {
+    db.run(`INSERT INTO users (username, password, profile_picture) VALUES (?, ?, ?)`, ['admin', 'admin123', '/uploads/icon.png'], function (err) {
         if (err) {
             console.error(err.message);
         } else {
