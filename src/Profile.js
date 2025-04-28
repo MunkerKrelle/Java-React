@@ -78,31 +78,20 @@ function Profile() {
                 <div style={styles.postsSection}>
                     <h2>Your Posts</h2>
                     <ul style={styles.postList}>
-                        {userPosts.map(post => {
-                            const user = users.find(user => user.username === post.owner); // Find the user associated with the post
-                            return (
-                                <li key={post.id} style={styles.postItem}>
-                                    <div style={styles.postHeader}>
-                                        <img
-                                            src={`http://localhost:3001${user?.profile_picture || '/uploads/icon.png'}`}
-                                            alt="User"
-                                            style={styles.postUserPicture}
-                                        />
-                                        <span style={styles.postUsername}>{post.owner}</span>
-                                    </div>
-                                    <h3 style={styles.postTitle}>{post.name}</h3>
-                                    <p style={styles.postText}>{post.text}</p>
-                                    {post.photo && (
-                                        <img
-                                            src={`http://localhost:3001${post.photo}`}
-                                            alt="Post"
-                                            style={styles.postImage}
-                                        />
-                                    )}
-                                    <p style={styles.postDate}>{post.date}</p>
-                                </li>
-                            );
-                        })}
+                        {userPosts.map(post => (
+                            <li key={post.id} style={styles.postItem}>
+                                <h3 style={styles.postTitle}>{post.name}</h3>
+                                <p style={styles.postText}>{post.text}</p>
+                                {post.photo && (
+                                    <img
+                                        src={`http://localhost:3001${post.photo}`}
+                                        alt="Post"
+                                        style={styles.postImage}
+                                    />
+                                )}
+                                <p style={styles.postDate}>{post.date}</p>
+                            </li>
+                        ))}
                     </ul>
                 </div>
             </div>
