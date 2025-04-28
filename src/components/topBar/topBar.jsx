@@ -1,8 +1,14 @@
 import React, {useState} from "react"
 import "./topbar.css"
 import { AiOutlineSearch,AiOutlineUser, AiFillMessage, AiFillSound } from "react-icons/ai";
+import { CiChat2 } from "react-icons/ci";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 export default function TopBar(){
+    const navigate = useNavigate();
+    const location = useLocation();
+        const { username } = location.state || { username: "Guest" };
     return(
         <div className="topBarContainer">
             <div className="topBarLeft">
@@ -21,6 +27,9 @@ export default function TopBar(){
                 </div>
                 <div className="topBarIcons">
                     <div className="topBarIconItem">
+                        <CiChat2 />
+                        <span className="topBarIconBadge"></span>
+                    <div className="topBarIconItem">
                         <AiOutlineUser />
                         <span className="topBarIconBadge">1</span>
                     </div>
@@ -33,7 +42,8 @@ export default function TopBar(){
                         <span className="topBarIconBadge">2</span>
                     </div>
                 </div>
-                <img src="/assets/people/IMG_8355cropped.JPG" alt="" className="profilePicture" />
+                <img src="/assets/people/IMG_8355cropped.JPG" alt="" className="profilePicture"
+                onClick={() => navigate('/profile', { state: { username } })}/>
             </div>
 
 
