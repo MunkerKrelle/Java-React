@@ -96,8 +96,8 @@ const styles = {
         margin: 0,
     },
     userItem: {
-        display: 'flex', // Use flexbox for horizontal alignment
-        alignItems: 'center', // Center items vertically
+        display: 'flex', 
+        alignItems: 'center', 
         marginBottom: '10px',
         padding: '10px',
         backgroundColor: '#f7dc6f',
@@ -108,7 +108,7 @@ const styles = {
     userPicture: {
         width: '40px',
         height: '40px',
-        borderRadius: '10px', // Rounded corners for a square shape
+        borderRadius: '10px',
         objectFit: 'cover',
         marginRight: '10px',
     },
@@ -128,7 +128,7 @@ const styles = {
     profilePicture: {
         width: '150px',
         height: '150px',
-        borderRadius: '15px', // Rounded corners for a larger square shape
+        borderRadius: '15px',
         objectFit: 'cover',
         marginBottom: '20px',
     },
