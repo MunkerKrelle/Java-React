@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Auth() {
-    const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Create Profile
+    const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // State for error messages
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -19,34 +19,34 @@ function Auth() {
             },
             body: JSON.stringify({ username, password }),
         })
-        .then(async (response) => {
-            const data = await response.json();
-            if (!response.ok) {
-                setErrorMessage(data.message || data.error || 'An error occurred.');
-                return;
-            }
+            .then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) {
+                    setErrorMessage(data.message || data.error || 'An error occurred.');
+                    return;
+                }
 
-            if (isLogin) {
-                console.log('Login successful:', data);
-                setErrorMessage(''); // Clear any previous error messages
-                navigate('/profile', { state: { username } });
-            } else {
-                console.log('User created:', data);
-                setErrorMessage(''); // Clear any previous error messages
-                setIsLogin(true); // Switch to login after successful registration
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            setErrorMessage('An error occurred. Please try again.');
-        });
+                if (isLogin) {
+                    console.log('Login successful:', data);
+                    setErrorMessage('');
+                    navigate('/profile', { state: { username } }); // Pass username to Profile
+                } else {
+                    console.log('User created:', data);
+                    setErrorMessage('');
+                    setIsLogin(true);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setErrorMessage('An error occurred. Please try again.');
+            });
     };
 
     return (
         <div style={styles.container}>
             <div style={styles.formContainer}>
                 <h1>{isLogin ? "Login" : "Create Profile"}</h1>
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Display error messages */}
+                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <input
                         type="text"
@@ -71,7 +71,7 @@ function Auth() {
                 <button
                     onClick={() => {
                         setIsLogin(!isLogin);
-                        setErrorMessage(''); // Clear error messages when switching forms
+                        setErrorMessage('');
                     }}
                     style={styles.switchButton}
                 >
@@ -82,7 +82,7 @@ function Auth() {
     );
 }
 
-const styles = { //blabla
+const styles = {
     container: {
         display: 'flex',
         justifyContent: 'center',
