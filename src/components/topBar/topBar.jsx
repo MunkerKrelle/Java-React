@@ -10,7 +10,7 @@ export default function TopBar(){
             </div>
             <div className="topBarCenter">
                 <div className="searchbar">
-                    <AiOutlineSearch />
+                    <AiOutlineSearch className="searchIcon"/>
                     <input placeholder="Search for people or posts" className="searchInput"/>
                 </div>
             </div>

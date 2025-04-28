@@ -10,19 +10,82 @@
 
 .topBarLeft{
     flex: 3;
-    background-color: aqua;
+    
 }
+
+.logo{
+    font-size: 24px;
+    margin-left: 20px;
+    font-weight: bold;
+    color: white;
+    cursor: pointer;
+}
+
 .topBarCenter{
     flex: 6;
-    background-color: bisque;
+    
 }
+
+.searchbar{
+    width: 85%;
+    height: 30px;
+    background-color: white;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.searchIcon{
+    font-size: 20px;
+    margin-left: 10px;
+}
+
+.searchInput{
+    border: none;
+}
+
+.searchInput:focus{
+    outline: none;
+}
+
 .topBarRight{
     flex: 4;
-    background-color: tan;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    color: white;
+}
+
+.topBarLink{
+    margin-right: 10px;
+    font-size:14px;
+    cursor: pointer;
+}
+
+.topBarIcons{
+    display: flex;
+}
+
+.topBarItem{
+    margin-right: 15px;
+    cursor: pointer;
+    position: relative;
+}
+
+.topBarIconBadge{
+    width: 15px;
+    height: 15px;
+    background-color: red;
+    border-radius: 50%;
+    color: white;
+    position: absolute;
+    top: -5px;
+    
 }
 
 .profilePicture{
-    width: 48px;
-    height: 48px;
+    width: 38px;
+    height: 40px;
+    border-radius: 30px;
 
 }
