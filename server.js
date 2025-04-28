@@ -91,6 +91,38 @@ app.post('/api/upload-profile-picture', upload.single('profilePicture'), (req, r
     });
 });
 
+// API endpoint to create a new post
+app.post('/api/posts', upload.single('photo'), (req, res) => {
+    const { owner, name, text, date } = req.body; // Extract post details from the request body
+    const photo = req.file ? `/uploads/${req.file.filename}` : null; // Save the file path if a photo is uploaded
+
+    const sql = `INSERT INTO posts (owner, name, text, date, photo) VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [owner, name, text, date, photo], function (err) {
+        if (err) {
+            console.error('Error creating post:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(201).json({ id: this.lastID, owner, name, text, date, photo });
+    });
+});
+
+// API endpoint to fetch posts
+app.get('/api/posts', (req, res) => {
+    const { owner } = req.query; // Get the owner (username) from the query parameters
+    const sql = owner
+        ? `SELECT * FROM posts WHERE owner = ?`
+        : `SELECT * FROM posts`;
+
+    db.all(sql, owner ? [owner] : [], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err.message);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json({ posts: rows });
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

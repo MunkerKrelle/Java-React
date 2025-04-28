@@ -36,7 +36,7 @@ db.serialize(() => {
         name TEXT NOT NULL, 
         text TEXT NOT NULL,
         date TEXT NOT NULL,
-        photo BLOB NOT NULL
+        photo TEXT
     )`, (err) => {
         if (err) {
             console.error(err.message);

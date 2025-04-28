@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from "react";
+<<<<<<< Updated upstream
 import { useLocation } from "react-router-dom";
+=======
+import { useLocation, Link, useNavigate } from "react-router-dom";
+>>>>>>> Stashed changes
 
 function Profile() {
+    const navigate = useNavigate();
     const location = useLocation();
     const { username } = location.state || { username: "Guest" };
     const [users, setUsers] = useState([]);
     const [profilePicture, setProfilePicture] = useState('/uploads/icon.png'); // Default profile picture
+    const [userPosts, setUserPosts] = useState([]);
 
     useEffect(() => {
         // Fetch all users from the API
@@ -19,6 +25,16 @@ function Profile() {
                 }
             })
             .catch(error => console.error('Error fetching users:', error));
+    }, [username]);
+
+    useEffect(() => {
+        fetch(`http://localhost:3001/api/posts?owner=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log('User posts:', data.posts);
+                setUserPosts(data.posts);
+            })
+            .catch(error => console.error('Error fetching user posts:', error));
     }, [username]);
 
     const handlePictureUpload = (e) => {
@@ -69,6 +85,34 @@ function Profile() {
                     onChange={handlePictureUpload}
                     style={styles.fileInput}
                 />
+<<<<<<< Updated upstream
+=======
+                <br></br>
+                <button
+                    onClick={() => navigate('/posts', { state: { username } })}
+                >
+                    Go to Posts
+                </button>
+                <div>
+                    <h2>Your Posts</h2>
+                    <ul style={styles.postList}>
+                        {userPosts.map(post => (
+                            <li key={post.id} style={styles.postItem}>
+                                <h3 style={styles.postTitle}>{post.name}</h3>
+                                <p style={styles.postText}>{post.text}</p>
+                                {post.photo && (
+                                    <img
+                                        src={`http://localhost:3001${post.photo}`}
+                                        alt="Post"
+                                        style={styles.postImage}
+                                    />
+                                )}
+                                <p style={styles.postDate}>{post.date}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+>>>>>>> Stashed changes
             </div>
         </div>
     );
@@ -134,6 +178,37 @@ const styles = {
     },
     fileInput: {
         marginTop: '10px',
+    },
+    postImage: {
+        width: '100%', // Make the image take the full width of the container
+        maxHeight: '200px', // Limit the height to avoid overly large images
+        objectFit: 'cover', // Ensure the image covers the container without distortion
+        borderRadius: '8px', // Add rounded corners for consistency
+        marginTop: '10px', // Add spacing between the image and other content
+    },
+    postList: {
+        listStyleType: 'none',
+        padding: 0,
+        margin: 0,
+    },
+    postItem: {
+        marginBottom: '10px',
+        padding: '10px',
+        backgroundColor: '#f7dc6f',
+        borderRadius: '4px',
+        textAlign: 'left',
+        color: '#17202a',
+    },
+    postTitle: {
+        fontWeight: 'bold',
+        marginBottom: '5px',
+    },
+        postText: {
+            marginBottom: '5px',
+    },
+    postDate: {
+        fontSize: '12px',
+        color: '#555',
     },
 };
 
