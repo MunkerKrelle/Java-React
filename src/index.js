@@ -12,8 +12,8 @@ root.render(
     <Router>
         <Routes>
             <Route path="/" element={<Auth />} />
-            {/* <Route path="/profile" element={<Profile />} />
-            <Route path="/create-user" element={<CreateUser />} /> */}
+             <Route path="/profile" element={<Profile />} />
+            <Route path="/create-user" element={<CreateUser />} /> 
             <Route path="/posts" element={<BlogPost />} />
         </Routes>
     </Router>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+
 
 function Profile() {
     const location = useLocation();
@@ -69,6 +70,10 @@ function Profile() {
                     onChange={handlePictureUpload}
                     style={styles.fileInput}
                 />
+                <br></br>
+                <Link to="/posts">
+                <button>Create Post</button>
+                </Link>
             </div>
         </div>
     );
