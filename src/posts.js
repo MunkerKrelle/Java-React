@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {username}  from "./login";
 import { Link } from "react-router-dom";
 import Comment from "./comment";
+import LikedButton from "./likedButton";
 
 
 export default function BlogPost() {
@@ -66,10 +67,15 @@ export default function BlogPost() {
                 <h3>{post.title}</h3>
                 <strong>{post.username}: </strong>
                 { post.content}
+                <br></br>
+                <LikedButton initialLikes={0}/>
+                <br></br>
+                <Comment postId={post.id} />
               </div>
             ))}
           </div>
-          <Comment postId={posts.id} />
+          
+          
         </div>
       );
 }

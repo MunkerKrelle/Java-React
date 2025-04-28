@@ -1,4 +1,5 @@
-import React, {useState} from "react";  
+import React, {useState} from "react"; 
+import LikedButton from "./likedButton"; 
 
 
 
@@ -26,6 +27,8 @@ function Comment({postId}) {
                 {comments.map(comment => (
                     <div key={comment.id} className="comment">
                         <p>{comment.text}</p>
+                    <LikedButton initialLikes={0} /> 
+                    <br></br>    
                     </div>
                 ))}
             </div>
