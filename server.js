@@ -129,13 +129,39 @@ app.get('/api/posts', (req, res) => {
 // API endpoint to save a like
 app.post('/api/likes', (req, res) => {
     const { userref, postref } = req.body;
-    const sql = `INSERT INTO likes (userref, postref) VALUES (?, ?)`;
-    db.run(sql, [userref, postref], function (err) {
+
+    // Check if the user has already liked the post
+    const checkSql = `SELECT * FROM likes WHERE userref = ? AND postref = ?`;
+    db.get(checkSql, [userref, postref], (err, row) => {
         if (err) {
-            console.error('Error saving like:', err.message);
+            console.error('Error checking like:', err.message);
             return res.status(500).json({ error: 'Database error' });
         }
-        res.status(201).json({ success: true });
+
+        if (row) {
+            // User has already liked the post
+            return res.status(400).json({ error: 'User has already liked this post' });
+        }
+
+        // Insert the like into the likes table
+        const insertSql = `INSERT INTO likes (userref, postref) VALUES (?, ?)`;
+        db.run(insertSql, [userref, postref], function (err) {
+            if (err) {
+                console.error('Error saving like:', err.message);
+                return res.status(500).json({ error: 'Database error' });
+            }
+
+            // Increment the likes count in the posts table
+            const updateSql = `UPDATE posts SET likes = likes + 1 WHERE id = ?`;
+            db.run(updateSql, [postref], function (err) {
+                if (err) {
+                    console.error('Error updating likes count:', err.message);
+                    return res.status(500).json({ error: 'Database error' });
+                }
+
+                res.status(201).json({ success: true });
+            });
+        });
     });
 });
 
@@ -161,6 +187,25 @@ app.get('/api/comments', (req, res) => {
             return res.status(500).json({ error: 'Database error' });
         }
         res.json({ comments: rows });
+    });
+});
+
+// API endpoint to fetch total likes for a user
+app.get('/api/user-likes', (req, res) => {
+    const { username } = req.query;
+
+    const sql = `
+        SELECT COUNT(*) AS totalLikes
+        FROM likes
+        WHERE userref = ?
+    `;
+    db.get(sql, [username], (err, row) => {
+        if (err) {
+            console.error('Error fetching user likes:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+
+        res.json({ totalLikes: row.totalLikes });
     });
 });
 
