@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 
-export const username = ""; // Export the username variable
+export const username = ""; // export username to be used in other files
 
 // creat input option to log in user/password
 export default function Login(){
