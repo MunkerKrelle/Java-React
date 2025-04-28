@@ -19,27 +19,27 @@ function Auth() {
             },
             body: JSON.stringify({ username, password }),
         })
-        .then(async (response) => {
-            const data = await response.json();
-            if (!response.ok) {
-                setErrorMessage(data.message || data.error || 'An error occurred.');
-                return;
-            }
+            .then(async (response) => {
+                const data = await response.json();
+                if (!response.ok) {
+                    setErrorMessage(data.message || data.error || 'An error occurred.');
+                    return;
+                }
 
-            if (isLogin) {
-                console.log('Login successful:', data);
-                setErrorMessage(''); // Clear any previous error messages
-                navigate('/profile', { state: { username } });
-            } else {
-                console.log('User created:', data);
-                setErrorMessage(''); // Clear any previous error messages
-                setIsLogin(true); // Switch to login after successful registration
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            setErrorMessage('An error occurred. Please try again.');
-        });
+                if (isLogin) {
+                    console.log('Login successful:', data);
+                    setErrorMessage(''); // Clear any previous error messages
+                    navigate('/profile', { state: { username } });
+                } else {
+                    console.log('User created:', data);
+                    setErrorMessage(''); // Clear any previous error messages
+                    setIsLogin(true); // Switch to login after successful registration
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setErrorMessage('An error occurred. Please try again.');
+            });
     };
 
     return (
