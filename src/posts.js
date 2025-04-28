@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function BlogPost() {
@@ -6,16 +7,16 @@ function BlogPost() {
     const location = useLocation();
     const { username } = location.state || { username: "Guest" }; // Retrieve the username from navigation state
 
-    console.log("Logged-in username:", username); // Debugging: Ensure the username is passed correctly
-
     const [posts, setPosts] = useState([]);
-    const [users, setUsers] = useState([]); // State to store user data
+    const [users, setUsers] = useState([]);
     const [postDetails, setPostDetails] = useState({
         name: '',
         text: '',
         date: '',
     });
     const [photo, setPhoto] = useState(null);
+    const [comments, setComments] = useState({}); // Store comments for each post
+    const [likes, setLikes] = useState({}); // Store likes for each post
 
     useEffect(() => {
         // Fetch posts from the API
@@ -29,6 +30,21 @@ function BlogPost() {
             .then(response => response.json())
             .then(data => setUsers(data.users))
             .catch(error => console.error('Error fetching users:', error));
+
+        // Fetch comments from the API
+        fetch('http://localhost:3001/api/comments')
+            .then(response => response.json())
+            .then(data => {
+                const commentsByPost = {};
+                data.comments.forEach(comment => {
+                    if (!commentsByPost[comment.postref]) {
+                        commentsByPost[comment.postref] = [];
+                    }
+                    commentsByPost[comment.postref].push(comment);
+                });
+                setComments(commentsByPost);
+            })
+            .catch(error => console.error('Error fetching comments:', error));
     }, []);
 
     const handleInputChange = (e) => {
@@ -43,17 +59,12 @@ function BlogPost() {
     const handleSubmit = (e) => {
         e.preventDefault();
         const formData = new FormData();
-        formData.append('owner', username); // Use the logged-in username
+        formData.append('owner', username);
         formData.append('name', postDetails.name);
         formData.append('text', postDetails.text);
         formData.append('date', new Date().toISOString());
         if (photo) {
-            formData.append('photo', photo); // Only append photo if it exists
-        }
-
-        // Debugging: Log the FormData content
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
+            formData.append('photo', photo);
         }
 
         fetch('http://localhost:3001/api/posts', {
@@ -62,12 +73,49 @@ function BlogPost() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log('Post created:', data);
-                setPosts([...posts, data]); // Add the new post to the list
+                setPosts([...posts, data]);
                 setPostDetails({ name: '', text: '', date: '' });
-                setPhoto(null); // Reset the photo input
+                setPhoto(null);
             })
             .catch(error => console.error('Error creating post:', error));
+    };
+
+    const handleLike = (postId) => {
+        fetch(`http://localhost:3001/api/likes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userref: username, postref: postId }),
+        })
+            .then(() => {
+                setLikes({ ...likes, [postId]: (likes[postId] || 0) + 1 });
+            })
+            .catch(error => console.error('Error liking post:', error));
+    };
+
+    const handleCommentSubmit = (postId, commentText) => {
+        const newComment = {
+            userref: username,
+            text: commentText,
+            date: new Date().toISOString(),
+            postref: postId,
+        };
+
+        fetch('http://localhost:3001/api/comments', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newComment),
+        })
+            .then(() => {
+                setComments({
+                    ...comments,
+                    [postId]: [...(comments[postId] || []), newComment],
+                });
+            })
+            .catch(error => console.error('Error submitting comment:', error));
     };
 
     return (
@@ -76,7 +124,7 @@ function BlogPost() {
                 <h2>All Posts</h2>
                 <ul style={styles.postList}>
                     {posts.map(post => {
-                        const user = users.find(user => user.username === post.owner); // Find the user associated with the post
+                        const user = users.find(user => user.username === post.owner);
                         return (
                             <li key={post.id} style={styles.postItem}>
                                 <div style={styles.postHeader}>
@@ -97,6 +145,42 @@ function BlogPost() {
                                     />
                                 )}
                                 <p style={styles.postDate}>{post.date}</p>
+                                <button
+                                    style={styles.likeButton}
+                                    onClick={() => handleLike(post.id)}
+                                >
+                                    Like ({likes[post.id] || 0})
+                                </button>
+                                <div style={styles.commentsSection}>
+                                    <h4>Comments</h4>
+                                    <ul style={styles.commentList}>
+                                        {(comments[post.id] || []).map((comment, index) => (
+                                            <li key={index} style={styles.commentItem}>
+                                                <strong>{comment.userref}:</strong> {comment.text}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    <form
+                                        onSubmit={(e) => {
+                                            e.preventDefault();
+                                            const commentText = e.target.elements.comment.value;
+                                            if (commentText.trim() !== '') {
+                                                handleCommentSubmit(post.id, commentText);
+                                                e.target.reset();
+                                            }
+                                        }}
+                                    >
+                                        <input
+                                            type="text"
+                                            name="comment"
+                                            placeholder="Write a comment..."
+                                            style={styles.commentInput}
+                                        />
+                                        <button type="submit" style={styles.commentButton}>
+                                            Submit
+                                        </button>
+                                    </form>
+                                </div>
                             </li>
                         );
                     })}
@@ -134,11 +218,11 @@ function BlogPost() {
                 </form>
             </div>
             <button
-                    style={styles.backButton}
-                    onClick={() => navigate('/profile', { state: { username } })}
-                >
-                    Back to Profile
-                </button>
+                style={styles.backButton}
+                onClick={() => navigate('/profile', { state: { username } })}
+            >
+                Back to Profile
+            </button>
         </div>
     );
 }
@@ -204,17 +288,55 @@ const styles = {
         borderRadius: '4px',
         marginTop: '10px',
     },
+    likeButton: {
+        padding: '5px 10px',
+        fontSize: '14px',
+        borderRadius: '4px',
+        border: 'none',
+        backgroundColor: '#17202a',
+        color: '#fff',
+        cursor: 'pointer',
+        marginTop: '10px',
+    },
+    commentsSection: {
+        marginTop: '10px',
+    },
+    commentList: {
+        listStyleType: 'none',
+        padding: 0,
+        margin: 0,
+    },
+    commentItem: {
+        marginBottom: '5px',
+    },
+    commentInput: {
+        marginBottom: '10px',
+        padding: '5px',
+        fontSize: '14px',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        width: '100%',
+    },
+    commentButton: {
+        padding: '5px 10px',
+        fontSize: '14px',
+        borderRadius: '4px',
+        border: 'none',
+        backgroundColor: '#17202a',
+        color: '#fff',
+        cursor: 'pointer',
+    },
     backButton: {
-      position: 'absolute',
-      top: '20px', // Distance from the bottom
-      right: '20px', // Distance from the right
-      padding: '10px',
-      fontSize: '16px',
-      borderRadius: '4px',
-      border: 'none',
-      backgroundColor: '#17202a',
-      color: '#fff',
-      cursor: 'pointer',
+        position: 'absolute',
+        top: '20px',
+        right: '20px',
+        padding: '10px',
+        fontSize: '16px',
+        borderRadius: '4px',
+        border: 'none',
+        backgroundColor: '#17202a',
+        color: '#fff',
+        cursor: 'pointer',
     },
     mainContent: {
         flex: 1,
@@ -263,84 +385,4 @@ const styles = {
     },
 };
 
-export default BlogPost;import React, {useState} from "react";
-import {username}  from "./login";
-import { Link } from "react-router-dom";
-import Comment from "./comment";
-import LikedButton from "./likedButton";
-
-
-export default function BlogPost() {
-    const [posts, setPosts] = useState([]);
-    const [newPost, setNewPost] = useState("");
-    const [title, setTitle] = useState("");
-
-    const handleTitleChange = (event) => {
-        setTitle(event.target.value);
-    };
-    
-    const handleChange = (event) => {
-        setNewPost(event.target.value);
-    };
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        if (newPost.trim()=== "") return;
-            
-    const newPostObject = {
-        id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        title: title,
-        content: newPost,
-        username: username || "Anonymous",
-        
-    };
-    setPosts([newPostObject, ...posts]);
-    setNewPost("");
-    setTitle("");
-    
-    };
-
-    return (
-        <div style={{ maxWidth: "500px", margin: "auto" }}>
-          <h2>Social Feed</h2>
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              value={title}
-              onChange={handleTitleChange}
-              placeholder="Skriv din overskrift her..."
-              style={{ width: "100%", padding: "10px", marginBottom: "10px" }}
-              />
-            <textarea
-              value={newPost}
-              onChange={handleChange}
-              placeholder="Skriv dit opslag her..."
-              rows={4}
-              style={{ width: "100%", padding: "10px" }}
-            />
-            <button type="submit" style={{ marginTop: "10px" }}>Post</button>
-            <br></br>
-            <br></br>
-            <Link to="/profile">
-                <button>Back to Profile</button>
-            </Link>
-          </form>
-    
-          <div style={{ marginTop: "30px" }}>
-            {posts.map((post) => (
-              <div key={post.id} style={{ borderBlock: "10px solid #ccc" ,padding: "10px 0" }}>
-                <h3>{post.title}</h3>
-                <strong>{post.username}: </strong>
-                { post.content}
-                <br></br>
-                <LikedButton initialLikes={0}/>
-                <br></br>
-                <Comment postId={post.id} />
-              </div>
-            ))}
-          </div>
-          
-          
-        </div>
-      );
-}
+export default BlogPost;
