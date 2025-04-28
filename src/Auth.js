@@ -82,7 +82,7 @@ function Auth() {
     );
 }
 
-const styles = {
+const styles = { //blabla
     container: {
         display: 'flex',
         justifyContent: 'center',
