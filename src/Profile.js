@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import { useLocation } from "react-router-dom";
+=======
+import { useLocation, Link, useNavigate } from "react-router-dom";
+>>>>>>> Stashed changes
 =======
 import { useLocation, Link, useNavigate } from "react-router-dom";
 >>>>>>> Stashed changes
@@ -112,6 +116,9 @@ function Profile() {
                         ))}
                     </ul>
                 </div>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             </div>
         </div>
