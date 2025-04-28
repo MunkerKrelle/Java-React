@@ -94,7 +94,10 @@ app.post('/api/upload-profile-picture', upload.single('profilePicture'), (req, r
 // API endpoint to create a new post
 app.post('/api/posts', upload.single('photo'), (req, res) => {
     const { owner, name, text, date } = req.body; // Extract post details from the request body
-    const photo = req.file ? `/uploads/${req.file.filename}` : null; // Save the file path if a photo is uploaded
+    const photo = req.file ? `/uploads/${req.file.filename}` : null; // Default to null if no photo is uploaded
+
+    // Debugging: Log the incoming data
+    console.log('Post data received:', { owner, name, text, date, photo });
 
     const sql = `INSERT INTO posts (owner, name, text, date, photo) VALUES (?, ?, ?, ?, ?)`;
     db.run(sql, [owner, name, text, date, photo], function (err) {

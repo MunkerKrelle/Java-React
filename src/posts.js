@@ -9,6 +9,7 @@ function BlogPost() {
     console.log("Logged-in username:", username); // Debugging: Ensure the username is passed correctly
 
     const [posts, setPosts] = useState([]);
+    const [users, setUsers] = useState([]); // State to store user data
     const [postDetails, setPostDetails] = useState({
         name: '',
         text: '',
@@ -22,6 +23,12 @@ function BlogPost() {
             .then(response => response.json())
             .then(data => setPosts(data.posts))
             .catch(error => console.error('Error fetching posts:', error));
+
+        // Fetch users from the API
+        fetch('http://localhost:3001/api/users')
+            .then(response => response.json())
+            .then(data => setUsers(data.users))
+            .catch(error => console.error('Error fetching users:', error));
     }, []);
 
     const handleInputChange = (e) => {
@@ -41,7 +48,12 @@ function BlogPost() {
         formData.append('text', postDetails.text);
         formData.append('date', new Date().toISOString());
         if (photo) {
-            formData.append('photo', photo);
+            formData.append('photo', photo); // Only append photo if it exists
+        }
+
+        // Debugging: Log the FormData content
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
         }
 
         fetch('http://localhost:3001/api/posts', {
@@ -53,7 +65,7 @@ function BlogPost() {
                 console.log('Post created:', data);
                 setPosts([...posts, data]); // Add the new post to the list
                 setPostDetails({ name: '', text: '', date: '' });
-                setPhoto(null);
+                setPhoto(null); // Reset the photo input
             })
             .catch(error => console.error('Error creating post:', error));
     };
@@ -63,27 +75,32 @@ function BlogPost() {
             <div style={styles.sidebar}>
                 <h2>All Posts</h2>
                 <ul style={styles.postList}>
-                    {posts.map(post => (
-                        <li key={post.id} style={styles.postItem}>
-                            <h3 style={styles.postTitle}>{post.name}</h3>
-                            <p style={styles.postText}>{post.text}</p>
-                            {post.photo && (
-                                <img
-                                    src={`http://localhost:3001${post.photo}`}
-                                    alt="Post"
-                                    style={styles.postImage}
-                                />
-                            )}
-                            <p style={styles.postDate}>{post.date}</p>
-                        </li>
-                    ))}
+                    {posts.map(post => {
+                        const user = users.find(user => user.username === post.owner); // Find the user associated with the post
+                        return (
+                            <li key={post.id} style={styles.postItem}>
+                                <div style={styles.postHeader}>
+                                    <img
+                                        src={`http://localhost:3001${user?.profile_picture || '/uploads/icon.png'}`}
+                                        alt="User"
+                                        style={styles.postUserPicture}
+                                    />
+                                    <span style={styles.postUsername}>{post.owner}</span>
+                                </div>
+                                <h3 style={styles.postTitle}>{post.name}</h3>
+                                <p style={styles.postText}>{post.text}</p>
+                                {post.photo && (
+                                    <img
+                                        src={`http://localhost:3001${post.photo}`}
+                                        alt="Post"
+                                        style={styles.postImage}
+                                    />
+                                )}
+                                <p style={styles.postDate}>{post.date}</p>
+                            </li>
+                        );
+                    })}
                 </ul>
-                <button
-                    style={styles.backButton}
-                    onClick={() => navigate('/profile', { state: { username } })}
-                >
-                    Back to Profile
-                </button>
             </div>
             <div style={styles.mainContent}>
                 <h1>Create a New Post</h1>
@@ -116,6 +133,12 @@ function BlogPost() {
                     </button>
                 </form>
             </div>
+            <button
+                    style={styles.backButton}
+                    onClick={() => navigate('/profile', { state: { username } })}
+                >
+                    Back to Profile
+                </button>
         </div>
     );
 }
@@ -149,6 +172,21 @@ const styles = {
         textAlign: 'left',
         color: '#17202a',
     },
+    postHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '10px',
+    },
+    postUserPicture: {
+        width: '40px',
+        height: '40px',
+        borderRadius: '15%',
+        marginRight: '10px',
+    },
+    postUsername: {
+        fontWeight: 'bold',
+        color: '#17202a',
+    },
     postTitle: {
         fontWeight: 'bold',
         marginBottom: '5px',
@@ -167,14 +205,16 @@ const styles = {
         marginTop: '10px',
     },
     backButton: {
-        marginTop: '20px',
-        padding: '10px',
-        fontSize: '16px',
-        borderRadius: '4px',
-        border: 'none',
-        backgroundColor: '#17202a',
-        color: '#fff',
-        cursor: 'pointer',
+      position: 'absolute',
+      top: '20px', // Distance from the bottom
+      right: '20px', // Distance from the right
+      padding: '10px',
+      fontSize: '16px',
+      borderRadius: '4px',
+      border: 'none',
+      backgroundColor: '#17202a',
+      color: '#fff',
+      cursor: 'pointer',
     },
     mainContent: {
         flex: 1,

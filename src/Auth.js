@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 function Auth() {
-    const [isLogin, setIsLogin] = useState(true); // Toggle between Login and Create Profile
+    const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // State for error messages
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
     const handleSubmit = (e) => {
@@ -28,12 +28,12 @@ function Auth() {
 
                 if (isLogin) {
                     console.log('Login successful:', data);
-                    setErrorMessage(''); // Clear any previous error messages
-                    navigate('/profile', { state: { username } });
+                    setErrorMessage('');
+                    navigate('/profile', { state: { username } }); // Pass username to Profile
                 } else {
                     console.log('User created:', data);
-                    setErrorMessage(''); // Clear any previous error messages
-                    setIsLogin(true); // Switch to login after successful registration
+                    setErrorMessage('');
+                    setIsLogin(true);
                 }
             })
             .catch(error => {
@@ -46,7 +46,7 @@ function Auth() {
         <div style={styles.container}>
             <div style={styles.formContainer}>
                 <h1>{isLogin ? "Login" : "Create Profile"}</h1>
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>} {/* Display error messages */}
+                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                 <form onSubmit={handleSubmit} style={styles.form}>
                     <input
                         type="text"
@@ -71,7 +71,7 @@ function Auth() {
                 <button
                     onClick={() => {
                         setIsLogin(!isLogin);
-                        setErrorMessage(''); // Clear error messages when switching forms
+                        setErrorMessage('');
                     }}
                     style={styles.switchButton}
                 >
@@ -82,7 +82,7 @@ function Auth() {
     );
 }
 
-const styles = { //blabla
+const styles = {
     container: {
         display: 'flex',
         justifyContent: 'center',
