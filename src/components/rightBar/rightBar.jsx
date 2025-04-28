@@ -4,7 +4,11 @@ import "./rightBar.css"
 export default function RightBar(){
     return(
         <div className="rightbar">
-            Rightbar
+            <div className="rightbarWrapper">
+                
+
+                
+            </div>
         </div>
     )
 }
