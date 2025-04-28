@@ -7,7 +7,7 @@ import Home from "./page/home/homepage";
 
 // Render the App component
 const root = createRoot(document.getElementById("root"));
-root.render(<TopBar/>);
+root.render(<Home/>);
 
 // const login = createRoot(document.getElementById("login"));
 // login.render(<Login />);
