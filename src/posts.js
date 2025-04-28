@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {username}  from "./login";
+import { Link } from "react-router-dom";
 
 
 export default function BlogPost() {
@@ -51,6 +52,11 @@ export default function BlogPost() {
               style={{ width: "100%", padding: "10px" }}
             />
             <button type="submit" style={{ marginTop: "10px" }}>Post</button>
+            <br></br>
+            <br></br>
+            <Link to="/profile">
+                <button>Back to Profile</button>
+            </Link>
           </form>
     
           <div style={{ marginTop: "30px" }}>
