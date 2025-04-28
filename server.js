@@ -91,6 +91,79 @@ app.post('/api/upload-profile-picture', upload.single('profilePicture'), (req, r
     });
 });
 
+// API endpoint to create a new post
+app.post('/api/posts', upload.single('photo'), (req, res) => {
+    const { owner, name, text, date } = req.body; // Extract post details from the request body
+    const photo = req.file ? `/uploads/${req.file.filename}` : null; // Default to null if no photo is uploaded
+
+    // Debugging: Log the incoming data
+    console.log('Post data received:', { owner, name, text, date, photo });
+
+    const sql = `INSERT INTO posts (owner, name, text, date, photo) VALUES (?, ?, ?, ?, ?)`;
+    db.run(sql, [owner, name, text, date, photo], function (err) {
+        if (err) {
+            console.error('Error creating post:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(201).json({ id: this.lastID, owner, name, text, date, photo });
+    });
+});
+
+// API endpoint to fetch posts
+app.get('/api/posts', (req, res) => {
+    const { owner } = req.query; // Get the owner (username) from the query parameters
+    const sql = owner
+        ? `SELECT * FROM posts WHERE owner = ?`
+        : `SELECT * FROM posts`;
+
+    db.all(sql, owner ? [owner] : [], (err, rows) => {
+        if (err) {
+            console.error('Database error:', err.message);
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json({ posts: rows });
+    });
+});
+
+// API endpoint to save a like
+app.post('/api/likes', (req, res) => {
+    const { userref, postref } = req.body;
+    const sql = `INSERT INTO likes (userref, postref) VALUES (?, ?)`;
+    db.run(sql, [userref, postref], function (err) {
+        if (err) {
+            console.error('Error saving like:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(201).json({ success: true });
+    });
+});
+
+// API endpoint to save a comment
+app.post('/api/comments', (req, res) => {
+    const { userref, text, date, postref } = req.body;
+    const sql = `INSERT INTO comments (userref, text, date, postref) VALUES (?, ?, ?, ?)`;
+    db.run(sql, [userref, text, date, postref], function (err) {
+        if (err) {
+            console.error('Error saving comment:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.status(201).json({ success: true });
+    });
+});
+
+// API endpoint to fetch comments
+app.get('/api/comments', (req, res) => {
+    const sql = `SELECT * FROM comments`;
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            console.error('Error fetching comments:', err.message);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ comments: rows });
+    });
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });

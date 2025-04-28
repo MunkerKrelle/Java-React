@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Link } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Profile() {
+    const navigate = useNavigate();
     const location = useLocation();
     const { username } = location.state || { username: "Guest" };
     const [users, setUsers] = useState([]);
-    const [profilePicture, setProfilePicture] = useState('/uploads/icon.png'); // Default profile picture
+    const [profilePicture, setProfilePicture] = useState('/uploads/icon.png');
+    const [userPosts, setUserPosts] = useState([]);
 
     useEffect(() => {
-        // Fetch all users from the API
         fetch('http://localhost:3001/api/users')
             .then(response => response.json())
             .then(data => {
@@ -22,6 +22,13 @@ function Profile() {
             .catch(error => console.error('Error fetching users:', error));
     }, [username]);
 
+    useEffect(() => {
+        fetch(`http://localhost:3001/api/posts?owner=${username}`)
+            .then(response => response.json())
+            .then(data => setUserPosts(data.posts))
+            .catch(error => console.error('Error fetching user posts:', error));
+    }, [username]);
+
     const handlePictureUpload = (e) => {
         const formData = new FormData();
         formData.append('profilePicture', e.target.files[0]);
@@ -31,15 +38,13 @@ function Profile() {
             method: 'POST',
             body: formData,
         })
-        .then(response => response.json())
-        .then(data => {
-            console.log('Profile picture uploaded:', data);
-            setProfilePicture(data.filePath); // Update profile picture
-        })
-        .catch(error => console.error('Error uploading profile picture:', error));
+            .then(response => response.json())
+            .then(data => setProfilePicture(data.filePath))
+            .catch(error => console.error('Error uploading profile picture:', error));
     };
 
     return (
+        <div>
         <div style={styles.container}>
             <div style={styles.sidebar}>
                 <h2>All Users</h2>
@@ -70,11 +75,44 @@ function Profile() {
                     onChange={handlePictureUpload}
                     style={styles.fileInput}
                 />
-                <br></br>
-                <Link to="/posts">
-                <button>Create Post</button>
-                </Link>
+                <div style={styles.postsSection}>
+                    <h2>Your Posts</h2>
+                    <ul style={styles.postList}>
+                        {userPosts.map(post => {
+                            const user = users.find(user => user.username === post.owner); // Find the user associated with the post
+                            return (
+                                <li key={post.id} style={styles.postItem}>
+                                    <div style={styles.postHeader}>
+                                        <img
+                                            src={`http://localhost:3001${user?.profile_picture || '/uploads/icon.png'}`}
+                                            alt="User"
+                                            style={styles.postUserPicture}
+                                        />
+                                        <span style={styles.postUsername}>{post.owner}</span>
+                                    </div>
+                                    <h3 style={styles.postTitle}>{post.name}</h3>
+                                    <p style={styles.postText}>{post.text}</p>
+                                    {post.photo && (
+                                        <img
+                                            src={`http://localhost:3001${post.photo}`}
+                                            alt="Post"
+                                            style={styles.postImage}
+                                        />
+                                    )}
+                                    <p style={styles.postDate}>{post.date}</p>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </div>
             </div>
+            <button
+                    style={styles.postButton}
+                    onClick={() => navigate('/posts', { state: { username } })}
+                >
+                    Go to Posts
+                </button>
+        </div>
         </div>
     );
 }
@@ -82,9 +120,10 @@ function Profile() {
 const styles = {
     container: {
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'flex-start', // Align items to the top
         height: '100vh',
         backgroundColor: '#f5f5f5',
+        overflow: 'hidden', // Prevent horizontal overflow
     },
     sidebar: {
         width: '20%',
@@ -93,7 +132,7 @@ const styles = {
         padding: '20px',
         boxSizing: 'border-box',
         height: '100vh',
-        overflowY: 'auto',
+        overflowY: 'auto', // Make the sidebar scrollable if content overflows
     },
     userList: {
         listStyleType: 'none',
@@ -101,8 +140,8 @@ const styles = {
         margin: 0,
     },
     userItem: {
-        display: 'flex', // Use flexbox for horizontal alignment
-        alignItems: 'center', // Center items vertically
+        display: 'flex', 
+        alignItems: 'center', 
         marginBottom: '10px',
         padding: '10px',
         backgroundColor: '#f7dc6f',
@@ -113,7 +152,7 @@ const styles = {
     userPicture: {
         width: '40px',
         height: '40px',
-        borderRadius: '10px', // Rounded corners for a square shape
+        borderRadius: '10px',
         objectFit: 'cover',
         marginRight: '10px',
     },
@@ -122,23 +161,91 @@ const styles = {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start', // Align content to the top
         backgroundColor: '#fff',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
         padding: '20px',
         margin: '0 auto',
         maxWidth: '600px',
+        height: '100vh', // Set height to viewport height
+        overflowY: 'auto', // Enable vertical scrolling for posts
+        position: 'relative', // Enable absolute positioning for child elements
     },
     profilePicture: {
         width: '150px',
         height: '150px',
-        borderRadius: '15px', // Rounded corners for a larger square shape
+        borderRadius: '15px',
         objectFit: 'cover',
         marginBottom: '20px',
     },
     fileInput: {
         marginTop: '10px',
+    },
+    postImage: {
+        alignItems: 'center',
+        maxHeight: '200px', 
+        objectFit: 'cover', 
+        borderRadius: '8px', 
+        marginTop: '10px', 
+    },
+    postList: {
+        listStyleType: 'none',
+        padding: 0,
+        margin: 0,
+        width: '100%',
+    },
+    postItem: {
+        marginBottom: '10px',
+        padding: '10px',
+        backgroundColor: '#f7dc6f',
+        borderRadius: '4px',
+        textAlign: 'left',
+        color: '#17202a',
+        width: '100%',
+        boxSizing: 'border-box',
+    },
+    postHeader: {
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '10px',
+    },
+    postUserPicture: {
+        width: '40px',
+        height: '40px',
+        borderRadius: '10px',
+        objectFit: 'cover',
+        marginRight: '10px',
+    },
+    postUsername: {
+        fontWeight: 'bold',
+        color: '#17202a',
+    },
+    postTitle: {
+        fontWeight: 'bold',
+        marginBottom: '5px',
+    },
+    postText: {
+        marginBottom: '5px',
+    },
+    postDate: {
+        fontSize: '12px',
+        color: '#555',
+    },
+    postButton: {
+        position: 'absolute',
+        top: '20px', // Distance from the bottom
+        right: '20px', // Distance from the right
+        padding: '10px',
+        fontSize: '16px',
+        borderRadius: '4px',
+        border: 'none',
+        backgroundColor: '#17202a',
+        color: '#fff',
+        cursor: 'pointer',
+    },
+    postsSection: {
+        width: '100%', // Ensure the posts section takes full width
     },
 };
 
