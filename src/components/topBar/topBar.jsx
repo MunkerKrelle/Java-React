@@ -25,10 +25,10 @@ export default function TopBar(){
                     <span className="topBarLink">Homepage</span>
                     <span className="topBarLink">TimeLine</span>
                 </div>
-                <div className="topBarIcons">
-                    <div className="topBarIconItem">
+                    <div className="post">
                         <CiChat2 />
-                        <span className="topBarIconBadge"></span>
+                        </div>
+                <div className="topBarIcons">
                     <div className="topBarIconItem">
                         <AiOutlineUser />
                         <span className="topBarIconBadge">1</span>
