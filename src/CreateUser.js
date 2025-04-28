@@ -1,21 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 function CreateUser() {
-    const [users, setUsers] = useState([]);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    useEffect(() => {
-        // Fetch data from the API
-        fetch('http://localhost:3001/api/users')
-            .then(response => response.json())
-            .then(data => setUsers(data.users))
-            .catch(error => console.error('Error fetching data:', error));
-    }, []);
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        // Send user input to the API
         fetch('http://localhost:3001/api/users', {
             method: 'POST',
             headers: {
@@ -25,25 +15,16 @@ function CreateUser() {
         })
         .then(response => response.json())
         .then(data => {
-            console.log('User added:', data);
-            // Fetch users again to update the list
-            setUsers(prevUsers => [...prevUsers, { id: data.id, username }]);
+            console.log('User created:', data);
             setUsername('');
             setPassword('');
         })
-        .catch(error => console.error('Error adding user:', error));
+        .catch(error => console.error('Error creating user:', error));
     };
 
     return (
         <div>
-            <h1>Hello World</h1>
-            <h2>User List:</h2>
-            <ul>
-                {users.map(user => (
-                    <li key={user.id}>{user.username}</li>
-                ))}
-            </ul>
-            <h2>Add User:</h2>
+            <h1>Create User</h1>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -59,9 +40,8 @@ function CreateUser() {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit">Add User</button>
+                <button type="submit">Create Account</button>
             </form>
-            <h2>Add Post:</h2>
         </div>
     );
 }
