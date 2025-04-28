@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {username}  from "./login";
 import { Link } from "react-router-dom";
+import Comment from "./comment";
 
 
 export default function BlogPost() {
@@ -68,6 +69,7 @@ export default function BlogPost() {
               </div>
             ))}
           </div>
+          <Comment postId={posts.id} />
         </div>
       );
 }
