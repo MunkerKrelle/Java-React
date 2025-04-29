@@ -45,3 +45,5 @@ replay_pid*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+mydatabase.db*
