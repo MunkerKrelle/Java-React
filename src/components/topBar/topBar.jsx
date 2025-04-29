@@ -27,6 +27,7 @@ export default function TopBar(){
                 </div>
                     <div className="post">
                         <CiChat2 />
+                        
                         </div>
                 <div className="topBarIcons">
                     <div className="topBarIconItem">
