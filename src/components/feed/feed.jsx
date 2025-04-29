@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import "./feed.css"
 
 function BlogPost() {
     const navigate = useNavigate();
@@ -119,7 +120,38 @@ function BlogPost() {
 
     return (
         <div style={styles.container}>
-            <div style={styles.sidebar}>
+            
+                <div className="postspace">
+                    <h1>Create a New Post</h1>
+                    <form style={styles.form} onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            name="name"
+                            placeholder="Post Title"
+                            value={postDetails.name}
+                            onChange={handleInputChange}
+                            style={styles.input}
+                            required
+                        />
+                        <textarea
+                            name="text"
+                            placeholder="Write your post here..."
+                            value={postDetails.text}
+                            onChange={handleInputChange}
+                            style={styles.textarea}
+                            required
+                        ></textarea>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleFileChange}
+                            style={styles.fileInput}
+                        />
+                        <button type="submit" style={styles.button}>
+                            Submit Post
+                        </button>
+                    </form>
+                </div>
                 <h2>All Posts</h2>
                 <ul style={styles.postList}>
                     {posts.map(post => {
@@ -184,58 +216,13 @@ function BlogPost() {
                         );
                     })}
                 </ul>
-            </div>
-            <div style={styles.mainContent}>
-                <h1>Create a New Post</h1>
-                <form style={styles.form} onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Post Title"
-                        value={postDetails.name}
-                        onChange={handleInputChange}
-                        style={styles.input}
-                        required
-                    />
-                    <textarea
-                        name="text"
-                        placeholder="Write your post here..."
-                        value={postDetails.text}
-                        onChange={handleInputChange}
-                        style={styles.textarea}
-                        required
-                    ></textarea>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        style={styles.fileInput}
-                    />
-                    <button type="submit" style={styles.button}>
-                        Submit Post
-                    </button>
-                </form>
-            </div>
+            
         </div>
     );
 }
 
 const styles = {
-    container: {
-        display: 'flex',
-        alignItems: 'center',
-        height: '100vh',
-        backgroundColor: '#f5f5f5',
-    },
-    sidebar: {
-        width: '20%',
-        backgroundColor: '#f4d03f',
-        color: '#17202a',
-        padding: '20px',
-        boxSizing: 'border-box',
-        height: '100vh',
-        overflowY: 'auto',
-    },
+
     postList: {
         listStyleType: 'none',
         padding: 0,
@@ -319,30 +306,15 @@ const styles = {
         color: '#fff',
         cursor: 'pointer',
     },
-    backButton: {
-        position: 'absolute',
-        top: '20px',
-        right: '20px',
-        padding: '10px',
-        fontSize: '16px',
-        borderRadius: '4px',
-        border: 'none',
-        backgroundColor: '#17202a',
-        color: '#fff',
-        cursor: 'pointer',
-    },
     mainContent: {
-        flex: 1,
         display: 'flex',
-        flexDirection: 'column',
+        
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#fff',
         borderRadius: '8px',
         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-        padding: '20px',
         margin: '0 auto',
-        maxWidth: '600px',
     },
     form: {
         display: 'flex',
