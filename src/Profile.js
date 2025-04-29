@@ -25,7 +25,11 @@ function Profile() {
     useEffect(() => {
         fetch(`http://localhost:3001/api/posts?owner=${username}`)
             .then(response => response.json())
-            .then(data => setUserPosts(data.posts))
+            .then(data => {
+                // Sort posts by date in descending order
+                const sortedPosts = data.posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setUserPosts(sortedPosts);
+            })
             .catch(error => console.error('Error fetching user posts:', error));
     }, [username]);
 
