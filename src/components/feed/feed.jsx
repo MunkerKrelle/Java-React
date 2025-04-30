@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import {useLocation } from "react-router-dom";
 import "./feed.css"
 
 function BlogPost() {
-    const navigate = useNavigate();
     const location = useLocation();
     const { username } = location.state || { username: "Guest" }; // Retrieve the username from navigation state
 
@@ -16,15 +15,20 @@ function BlogPost() {
     });
     const [photo, setPhoto] = useState(null);
     const [comments, setComments] = useState({}); // Store comments for each post
-    const [likes, setLikes] = useState({}); // Store likes for each post
 
     useEffect(() => {
         // Fetch posts from the API
         fetch('http://localhost:3001/api/posts')
             .then(response => response.json())
-            .then(data => setPosts(data.posts))
+            .then(data => {
+                // Sort posts by date in descending order
+                const sortedPosts = data.posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setPosts(sortedPosts);
+            })
             .catch(error => console.error('Error fetching posts:', error));
+    }, []);
 
+    useEffect(() => {
         // Fetch users from the API
         fetch('http://localhost:3001/api/users')
             .then(response => response.json())
@@ -73,7 +77,8 @@ function BlogPost() {
         })
             .then(response => response.json())
             .then(data => {
-                setPosts([...posts, data]);
+                // Add the new post to the top of the list
+                setPosts([data, ...posts]);
                 setPostDetails({ name: '', text: '', date: '' });
                 setPhoto(null);
             })
@@ -81,17 +86,29 @@ function BlogPost() {
     };
 
     const handleLike = (postId) => {
-        fetch(`http://localhost:3001/api/likes`, {
+        fetch('http://localhost:3001/api/likes', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ userref: username, postref: postId }),
         })
-            .then(() => {
-                setLikes({ ...likes, [postId]: (likes[postId] || 0) + 1 });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('You have already liked this post');
+                }
+                return response.json();
             })
-            .catch(error => console.error('Error liking post:', error));
+            .then(() => {
+                // Update the likes count for the post
+                setPosts(posts.map(post => {
+                    if (post.id === postId) {
+                        return { ...post, likes: (post.likes || 0) + 1 };
+                    }
+                    return post;
+                }));
+            })
+            .catch(error => alert(error.message)); // Alert the user if they already liked the post
     };
 
     const handleCommentSubmit = (postId, commentText) => {
@@ -115,12 +132,11 @@ function BlogPost() {
                     [postId]: [...(comments[postId] || []), newComment],
                 });
             })
-            .catch(error => console.error('Error submitting comment:', error));
+            .catch(error => alert(error.message));
     };
 
     return (
         <div style={styles.container}>
-            
                 <div className="postspace">
                     <h1>Create a New Post</h1>
                     <form style={styles.form} onSubmit={handleSubmit}>
@@ -180,7 +196,7 @@ function BlogPost() {
                                     style={styles.likeButton}
                                     onClick={() => handleLike(post.id)}
                                 >
-                                    Like ({likes[post.id] || 0})
+                                    Like ({post.likes || 0})
                                 </button>
                                 <div style={styles.commentsSection}>
                                     <h4>Comments</h4>

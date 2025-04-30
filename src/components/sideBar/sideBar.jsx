@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React from "react"
 import "./sideBar.css"
 import { AiOutlineUnorderedList } from "react-icons/ai";
 import { FaBookmark } from "react-icons/fa";

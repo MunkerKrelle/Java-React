@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import "./topbar.css"
 import { AiOutlineSearch,AiOutlineUser, AiFillMessage, AiFillSound } from "react-icons/ai";
 import { CiChat2 } from "react-icons/ci";
@@ -8,7 +8,24 @@ import { useNavigate, useLocation } from "react-router-dom";
 export default function TopBar(){
     const navigate = useNavigate();
     const location = useLocation();
-        const { username } = location.state || { username: "Guest" };
+    const { username } = location.state || { username: "Guest" };
+    const [, setUsers] = useState([]);
+    const [profilePicture, setProfilePicture] = useState('/uploads/icon.png');
+
+        useEffect(() => {
+            fetch('http://localhost:3001/api/users')
+                .then(response => response.json())
+                .then(data => {
+                    setUsers(data.users);
+                    const currentUser = data.users.find(user => user.username === username);
+                    if (currentUser && currentUser.profile_picture) {
+                        setProfilePicture(currentUser.profile_picture);
+                    }
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }, [username]);
+
+        
     return(
         <div className="topBarContainer">
             <div className="topBarLeft">
@@ -43,7 +60,7 @@ export default function TopBar(){
                         <span className="topBarIconBadge">2</span>
                     </div>
                 </div>
-                <img src="/assets/people/IMG_8355cropped.JPG" alt="" className="profilePicture"
+                <img src={`http://localhost:3001${profilePicture}`} alt="" className="profilePicture"
                 onClick={() => navigate('/profile', { state: { username } })}/>
             </div>
 

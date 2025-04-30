@@ -1,6 +1,5 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import BlogPost from "./posts";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Auth from "./Auth";
 import Profile from "./Profile";
