@@ -20,9 +20,15 @@ function BlogPost() {
         // Fetch posts from the API
         fetch('http://localhost:3001/api/posts')
             .then(response => response.json())
-            .then(data => setPosts(data.posts))
+            .then(data => {
+                // Sort posts by date in descending order
+                const sortedPosts = data.posts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setPosts(sortedPosts);
+            })
             .catch(error => console.error('Error fetching posts:', error));
+    }, []);
 
+    useEffect(() => {
         // Fetch users from the API
         fetch('http://localhost:3001/api/users')
             .then(response => response.json())
@@ -71,7 +77,8 @@ function BlogPost() {
         })
             .then(response => response.json())
             .then(data => {
-                setPosts([...posts, data]);
+                // Add the new post to the top of the list
+                setPosts([data, ...posts]);
                 setPostDetails({ name: '', text: '', date: '' });
                 setPhoto(null);
             })
