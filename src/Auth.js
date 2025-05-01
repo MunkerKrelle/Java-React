@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+// Auth component to handle user authentication (login and profile creation)
 function Auth() {
-    const [isLogin, setIsLogin] = useState(true);
+    const [isLogin, setIsLogin] = useState(true); 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -10,7 +11,7 @@ function Auth() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const url = isLogin ? 'http://localhost:3001/api/login' : 'http://localhost:3001/api/users';
+        const url = isLogin ? 'http://localhost:3001/api/login' : 'http://localhost:3001/api/users'; // Adjust URL based on login or create profile
 
         fetch(url, {
             method: 'POST',
@@ -26,6 +27,7 @@ function Auth() {
                     return;
                 }
 
+                // Handle successful login or profile creation
                 if (isLogin) {
                     console.log('Login successful:', data);
                     setErrorMessage('');

@@ -74,7 +74,7 @@ app.post('/api/login', (req, res) => {
 
 // API endpoint to upload a profile picture
 app.post('/api/upload-profile-picture', upload.single('profilePicture'), (req, res) => {
-    const { username } = req.body; // Assume the username is sent in the request body
+    const { username } = req.body; 
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
     }
@@ -95,8 +95,6 @@ app.post('/api/upload-profile-picture', upload.single('profilePicture'), (req, r
 app.post('/api/posts', upload.single('photo'), (req, res) => {
     const { owner, name, text, date } = req.body; // Extract post details from the request body
     const photo = req.file ? `/uploads/${req.file.filename}` : null; // Default to null if no photo is uploaded
-
-    // Debugging: Log the incoming data
     console.log('Post data received:', { owner, name, text, date, photo });
 
     const sql = `INSERT INTO posts (owner, name, text, date, photo) VALUES (?, ?, ?, ?, ?)`;
@@ -111,7 +109,7 @@ app.post('/api/posts', upload.single('photo'), (req, res) => {
 
 // API endpoint to fetch posts
 app.get('/api/posts', (req, res) => {
-    const { owner } = req.query; // Get the owner (username) from the query parameters
+    const { owner } = req.query;
     const sql = owner
         ? `SELECT * FROM posts WHERE owner = ?`
         : `SELECT * FROM posts`;
@@ -187,25 +185,6 @@ app.get('/api/comments', (req, res) => {
             return res.status(500).json({ error: 'Database error' });
         }
         res.json({ comments: rows });
-    });
-});
-
-// API endpoint to fetch total likes for a user
-app.get('/api/user-likes', (req, res) => {
-    const { username } = req.query;
-
-    const sql = `
-        SELECT COUNT(*) AS totalLikes
-        FROM likes
-        WHERE userref = ?
-    `;
-    db.get(sql, [username], (err, row) => {
-        if (err) {
-            console.error('Error fetching user likes:', err.message);
-            return res.status(500).json({ error: 'Database error' });
-        }
-
-        res.json({ totalLikes: row.totalLikes });
     });
 });
 
