@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+// Profile component to display user profile and posts
 function Profile() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -9,7 +10,8 @@ function Profile() {
     const [profilePicture, setProfilePicture] = useState('/uploads/icon.png');
     const [userPosts, setUserPosts] = useState([]);
 
-    useEffect(() => {
+    // Fetch all users and user posts on component mount
+    useEffect(() => { 
         fetch('http://localhost:3001/api/users')
             .then(response => response.json())
             .then(data => {
@@ -22,6 +24,7 @@ function Profile() {
             .catch(error => console.error('Error fetching users:', error));
     }, [username]);
 
+    // Fetch user posts when the username changes
     useEffect(() => {
         fetch(`http://localhost:3001/api/posts?owner=${username}`)
             .then(response => response.json())
@@ -33,6 +36,7 @@ function Profile() {
             .catch(error => console.error('Error fetching user posts:', error));
     }, [username]);
 
+    // Handle profile picture upload
     const handlePictureUpload = (e) => {
         const formData = new FormData();
         formData.append('profilePicture', e.target.files[0]);

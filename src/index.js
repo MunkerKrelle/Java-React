@@ -13,7 +13,7 @@ root.render(
         <Routes>
             <Route path="/" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/posts" element={<Home />} /> {/* Add BlogPost route */}
+            <Route path="/posts" element={<Home />} /> 
         </Routes>
     </Router>
 );

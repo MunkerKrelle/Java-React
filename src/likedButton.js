@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+// LikedButton component to handle like/unlike functionality
 function LikedButton({initialLikes = 0}) {
     const [likes, setLikes] = useState(initialLikes);
     const [liked, setLiked] = useState(false);

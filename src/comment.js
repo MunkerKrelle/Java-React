@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import LikedButton from "./likedButton"; 
 
 
-
+// Comment component to display and add comments
 function Comment({postId}) {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState('');
@@ -13,7 +13,7 @@ function Comment({postId}) {
         const comment = {
             postId: postId,
             text: newComment,
-            id: Date.now(), // Simple unique ID for the comment
+            id: Date.now(),
         };
 
         setComments([...comments, comment]);
