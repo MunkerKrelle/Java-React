@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 
 // LikedButton component to handle like/unlike functionality
