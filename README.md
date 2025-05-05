@@ -1,3 +1,8 @@
+# Start programmet
+Hvis mydatabase ikke er der: kør node database.js
+Derefter kør node server.js i en terminal
+Derfter kør npm start i en anden terminal 
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
